@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>20 стилей инфографики — промпты для нейросетей</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F7F5;
+    --surface: #FFFFFF;
+    --surface2: #F0F0ED;
+    --border: rgba(0,0,0,0.1);
+    --border-strong: rgba(0,0,0,0.18);
+    --text: #1A1A18;
+    --text-muted: #6B6B67;
+    --text-faint: #9A9A96;
+    --accent: #2563EB;
+    --accent-bg: #EFF6FF;
+    --accent-text: #1D4ED8;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.09), 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --surface: #1C1C1A;
+      --surface2: #252523;
+      --border: rgba(255,255,255,0.09);
+      --border-strong: rgba(255,255,255,0.16);
+      --text: #EDEDEA;
+      --text-muted: #9A9A96;
+      --text-faint: #6B6B67;
+      --accent: #3B82F6;
+      --accent-bg: #1E2A40;
+      --accent-text: #93C5FD;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  .header-inner { max-width: 1100px; margin: 0 auto; }
+  .header-top { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .page-title { font-size: 22px; font-weight: 600; color: var(--text); }
+  .page-subtitle { font-size: 13px; color: var(--text-muted); }
+
+  /* ── FILTERS ── */
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .filter-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 500;
+  }
+  .filter-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  /* ── SEARCH ── */
+  .search-wrap { position: relative; margin-left: auto; }
+  .search-input {
+    padding: 6px 12px 6px 32px;
+    border-radius: 20px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 13px;
+    font-family: inherit;
+    width: 200px;
+    outline: none;
+    transition: border-color 0.15s, width 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); width: 240px; }
+  .search-icon {
+    position: absolute; left: 10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-faint);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  /* ── MAIN ── */
+  .main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
+
+  .count-bar {
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* ── GRID ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .card:hover { box-shadow: var(--shadow-md); border-color: var(--border-strong); }
+  .card.expanded { border-color: var(--accent); }
+
+  .card-head {
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    user-select: none;
+  }
+  .card-num {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-faint);
+    min-width: 22px;
+    padding-top: 3px;
+    letter-spacing: 0.03em;
+  }
+  .card-main { flex: 1; min-width: 0; }
+  .card-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .card-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 10px;
+    margin-top: 7px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .tag-business { background: #EFF6FF; color: #1D4ED8; }
+  .tag-tech     { background: #F0FDF4; color: #15803D; }
+  .tag-editorial{ background: #FFFBEB; color: #B45309; }
+  .tag-creative { background: #F5F3FF; color: #6D28D9; }
+  .tag-art      { background: #FFF1F2; color: #BE123C; }
+
+  @media (prefers-color-scheme: dark) {
+    .tag-business { background: #1E2A40; color: #93C5FD; }
+    .tag-tech     { background: #14291F; color: #6EE7B7; }
+    .tag-editorial{ background: #2D2210; color: #FCD34D; }
+    .tag-creative { background: #1E1B30; color: #C4B5FD; }
+    .tag-art      { background: #2D1521; color: #FDA4AF; }
+  }
+
+  .card-chevron {
+    color: var(--text-faint);
+    font-size: 16px;
+    transition: transform 0.22s;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+  .card.expanded .card-chevron { transform: rotate(180deg); }
+
+  /* ── DETAILS ── */
+  .card-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .card.expanded .card-details { max-height: 800px; }
+
+  .card-body {
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+  .card-body-inner { padding-top: 12px; }
+
+  .detail-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 9px;
+    font-size: 13px;
+  }
+  .detail-key {
+    color: var(--text-faint);
+    font-size: 11px;
+    min-width: 90px;
+    padding-top: 1px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .detail-val { color: var(--text-muted); line-height: 1.55; }
+
+  /* ── PROMPT BOX ── */
+  .prompt-wrap { margin-top: 12px; }
+  .prompt-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .prompt-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    word-break: break-word;
+  }
+
+  .copy-btn {
+    margin-top: 8px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .copy-btn:hover { background: var(--accent-bg); color: var(--accent-text); border-color: var(--accent); }
+  .copy-btn.copied { background: #F0FDF4; color: #15803D; border-color: #86EFAC; }
+  @media (prefers-color-scheme: dark) {
+    .copy-btn.copied { background: #14291F; color: #6EE7B7; border-color: #166534; }
+  }
+
+  /* ── STYLE PREVIEW STRIP ── */
+  .style-strip {
+    height: 4px;
+    border-radius: 2px 2px 0 0;
+    margin-bottom: 0;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-faint);
+    font-size: 14px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-faint);
+    padding: 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .page-header { padding: 1.25rem 1rem 1rem; }
+    .main { padding: 1rem 1rem 3rem; }
+    .grid { grid-template-columns: 1fr; }
+    .search-input { width: 160px; }
+    .search-input:focus { width: 180px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div>
+        <div class="page-title">20 стилей инфографики</div>
+        <div class="page-subtitle">Готовые промпты для нейросетей — нажмите карточку, скопируйте, вставьте тему</div>
+      </div>
+      <div class="search-wrap" style="margin-left:auto">
+        <span class="search-icon">⌕</span>
+        <input class="search-input" id="search" type="text" placeholder="Поиск стиля..." oninput="applyFilters()">
+      </div>
+    </div>
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-cat="all" onclick="setFilter('all')">Все</button>
+      <button class="filter-btn" data-cat="business" onclick="setFilter('business')"><span class="filter-dot" style="background:#2563EB"></span>Деловые</button>
+      <button class="filter-btn" data-cat="tech" onclick="setFilter('tech')"><span class="filter-dot" style="background:#16A34A"></span>Технологичные</button>
+      <button class="filter-btn" data-cat="editorial" onclick="setFilter('editorial')"><span class="filter-dot" style="background:#D97706"></span>Редакционные</button>
+      <button class="filter-btn" data-cat="creative" onclick="setFilter('creative')"><span class="filter-dot" style="background:#7C3AED"></span>Креативные</button>
+      <button class="filter-btn" data-cat="art" onclick="setFilter('art')"><span class="filter-dot" style="background:#BE123C"></span>Художественные</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="count-bar" id="count-bar">Показано: 20 стилей</div>
+  <div class="grid" id="grid"></div>
+  <div class="footer">Промпты оптимизированы для Midjourney, DALL-E, ChatGPT Image, Ideogram, Stable Diffusion</div>
+</main>
+
+<script>
+const STYLES = [
+  {
+    id: 1, cat: "business", name: "Corporate Clean", sub: "Деловая минималистичная",
+    color: "#2563EB",
+    palette: "Белый фон, серый #F5F5F5, акцент #1A73E8 или корпоративный цвет",
+    typography: "Sans-serif (Inter, Roboto), строгая иерархия: 24px / 13px / 11px",
+    layout: "Чёткая сетка, линейные монохромные иконки, bar/line-чарты, выровненные блоки",
+    mood: "Доверие, профессионализм, нейтральность. Как слайды McKinsey или Google",
+    avoid: "Иллюстрации, текстуры, более 2 акцентных цветов, эмоции",
+    prompt: "Clean corporate infographic on white background. Strict 12-column grid layout. Sans-serif typography (Inter or Roboto), headline 24px bold, body 13px regular. Color palette: white background, light gray #F5F5F5 sections, single accent color #1A73E8. Line-style monochrome icons, bar and line charts only. No decorative elements, no textures, no illustrations. Professional B2B aesthetic, McKinsey-style data presentation. High information density, precise alignment."
+  },
+  {
+    id: 2, cat: "business", name: "Flat Design 2.0", sub: "Плоский иллюстративный",
+    color: "#0891B2",
+    palette: "Коралловый, индиго, жёлтый, мятный — насыщенные плоские цвета без теней",
+    typography: "Rounded sans-serif (Nunito, Poppins), полужирные заголовки",
+    layout: "Плоские иконки и иллюстрации, простые геометрические фигуры, стрелки",
+    mood: "Доступность, дружелюбие, ясность. Стиль Big Tech / Corporate Memphis",
+    avoid: "Тени, 3D-элементы, градиенты, сложные текстуры",
+    prompt: "Flat design 2.0 infographic. Bold solid colors without shadows or gradients: coral, indigo, yellow, mint. Rounded sans-serif font (Poppins or Nunito), semi-bold headings. Flat vector illustrations with simple geometric shapes. Clean iconography with thick 2px outlines. White or very light gray background. Friendly and approachable aesthetic, similar to Google or Slack illustration style. Each section uses a distinct flat color block."
+  },
+  {
+    id: 3, cat: "business", name: "Isometric 3D", sub: "Изометрическая",
+    color: "#7C3AED",
+    palette: "Синие, зелёные, фиолетовые тона, мягкие изометрические тени и блики",
+    typography: "Geometric sans-serif (Futura, Montserrat), крупные заголовки",
+    layout: "Объекты в изометрии 30°, слои и уровни, технологический пейзаж",
+    mood: "Инновационность, сложность сделана понятной, технологичность",
+    avoid: "Реалистичная перспектива, плоские иконки, тонкие шрифты",
+    prompt: "Isometric 3D infographic with 30-degree axonometric projection. No converging perspective lines. Objects rendered as isometric blocks with subtle top/side lighting. Color palette: rich blues, teals, purples with soft shadow fills. Geometric sans-serif typography (Montserrat). Urban or tech landscape aesthetic. Each data point is an isometric building, device, or module. Clear depth layers from foreground to background."
+  },
+  {
+    id: 4, cat: "tech", name: "Dark Tech / Neon", sub: "Тёмная технологичная",
+    color: "#06B6D4",
+    palette: "Фон #0A0E1A, неоновые акценты: cyan #00F5FF, зелёный #39FF14, фиолетовый",
+    typography: "Monospace (JetBrains Mono, Courier), uppercase labels, разреженный трекинг",
+    layout: "Тонкие линии сетки, HUD-элементы, прогресс-бары, гексагоны",
+    mood: "Технологии будущего, данные, кибербезопасность, аналитика",
+    avoid: "Светлый фон, пастельные цвета, иллюстрации людей",
+    prompt: "Dark tech infographic with near-black background (#0A0E1A). Neon accent colors: cyan #00F5FF, electric green #39FF14, or violet. Monospace font (JetBrains Mono or Courier) for data labels and uppercase section headers. Thin grid lines and dot matrix texture on background. HUD-style interface elements: progress bars, hexagonal grids, connector lines. Data presented as glowing gauges and terminal-style readouts. Cyberpunk meets data dashboard aesthetic."
+  },
+  {
+    id: 5, cat: "editorial", name: "Editorial Magazine", sub: "Редакционная журнальная",
+    color: "#DC2626",
+    palette: "Чёрный + белый + один яркий акцент (красный, жёлтый или синий). Стиль Bloomberg",
+    typography: "Serif display (Playfair Display, Georgia) для заголовков, sans для тела",
+    layout: "Асимметричная сетка, большой типографский заголовок, текст обтекает данные",
+    mood: "Авторитет, глубина, журналистика данных, уровень The Economist",
+    avoid: "Иконки-стикеры, мультяшные иллюстрации, яркие цветные фоны",
+    prompt: "Editorial magazine infographic in the style of Bloomberg or The Economist. Black and white base with single bold accent color (red #CC0000 or yellow). Serif display typeface (Playfair Display) for main headline in large size. Body in clean sans-serif. Asymmetric grid layout. Typography IS the design: oversized pull quotes, data callouts in bold numbers. Clean line charts and minimal bar charts with editorial annotations. No decorative icons or illustrations."
+  },
+  {
+    id: 6, cat: "tech", name: "Glassmorphism", sub: "Стеклянная прозрачность",
+    color: "#8B5CF6",
+    palette: "Градиентный фон (синий→фиолетовый), полупрозрачные карточки, белые контуры",
+    typography: "Light и medium weight sans-serif, белый текст, тонкие подписи",
+    layout: "Парящие карточки с блюром, слои прозрачности, тонкие белые бордеры 1px rgba",
+    mood: "iOS-стиль, премиум, современность, Apple-эстетика",
+    avoid: "Непрозрачные блоки, тёмный текст, грубые линии",
+    prompt: "Glassmorphism infographic. Gradient background (deep blue #1a1a4e to purple #4a0080). Frosted glass cards with background blur effect (backdrop-filter: blur 20px), semi-transparent white fill (rgba 255,255,255,0.1), thin 1px white border (rgba 255,255,255,0.2). Light-weight sans-serif in white. Floating card elements appear layered with depth. Subtle inner glow on active elements. Apple WWDC presentation aesthetic. Data displayed in luminous, airy panels."
+  },
+  {
+    id: 7, cat: "creative", name: "Neo-Brutalism", sub: "Нео-брутализм",
+    color: "#CA8A04",
+    palette: "Сырые первичные: жёлтый #FFE500, чёрный, белый, иногда красный или синий",
+    typography: "Сверхжирный гротеск (Anton, Archivo Black), огромные кегли",
+    layout: "Жирные чёрные рамки 3-5px, тень-смещение, нет скруглений, грубая асимметрия",
+    mood: "Дерзость, нонконформизм, сила, Gen-Z / стартап-культура",
+    avoid: "Скруглённые углы, тонкие линии, пастель, минимализм",
+    prompt: "Neo-brutalist infographic. Raw primary colors: pure yellow #FFE500, black, white. Ultra-bold display typography (Anton or Archivo Black), oversized text used as decorative element. Hard black borders 3-5px on all elements. Offset drop shadows (4px 4px 0 black) on cards. Zero border radius — everything sharp-cornered. Asymmetric chaotic-looking layout that is actually intentional. Confrontational and confident visual language. No gradients, no soft edges."
+  },
+  {
+    id: 8, cat: "creative", name: "Hand-Drawn Sketchnote", sub: "Рукописная зарисовка",
+    color: "#D97706",
+    palette: "Фон #FDF6E3, чернила #2C2C2C, маркерные: жёлтый, оранжевый, голубой",
+    typography: "Рукописный шрифт (Caveat, Patrick Hand), смешанные кегли",
+    layout: "Стрелки от руки, баннеры, подчёркивания маркером, пузыри, неровные линии",
+    mood: "Живость, творчество, мозговой штурм, личность, обучение",
+    avoid: "Цифровая точность, ровные линии, корпоративная строгость",
+    prompt: "Hand-drawn sketchnote infographic. Paper texture background (#FDF6E3). Ink-style dark lines simulating hand drawing. Handwritten font (Caveat or Patrick Hand) at varied sizes. Marker-style color highlights in yellow, orange, light blue. Arrow doodles, banner ribbons, circle emphasis rings, speech bubbles. Wobbly imperfect borders. Connectors as hand-drawn curved arrows. Brain-dump brainstorm visual language. Icons as simple thick-line doodles, not polished vectors."
+  },
+  {
+    id: 9, cat: "art", name: "Data Art / Abstract", sub: "Данные как искусство",
+    color: "#0F766E",
+    palette: "Тёмный фон, аналитические градиенты: красный→жёлтый, синий→зелёный",
+    typography: "Минимальные подписи, иногда без текста — данные говорят сами",
+    layout: "Хорды, сети, потоки Sankey, радарные диаграммы, анатомия данных",
+    mood: "Красота в данных, художественная визуализация, NYT/Guardian data viz",
+    avoid: "Бары и пироги, текстовые блоки, иконки, стандартные чарты",
+    prompt: "Data art abstract infographic in the style of NYT or Guardian data visualization. Dark background (#0D1117) with data-driven color ramps (red-to-yellow, blue-to-green). Visual elements ARE the data: chord diagrams, flow networks, Sankey diagrams, radial trees, or force-directed graphs. Minimal text labels only. Numbers expressed through shape size, color intensity, and position — not bars or pies. Scientific and artistic simultaneously. Beautiful geometry that encodes meaning."
+  },
+  {
+    id: 10, cat: "business", name: "Bento Grid", sub: "Сеточная плитка",
+    color: "#0284C7",
+    palette: "Пастельные плитки разных оттенков, белый или светло-серый фон",
+    typography: "Geometric sans, крупное число/иконка в центре плитки, подпись снизу",
+    layout: "Асимметричная сетка разноразмерных прямоугольников (как Apple Events)",
+    mood: "Современность, Apple-aesthetic, модульность, dashboard-стиль",
+    avoid: "Монотонная одинаковая сетка, длинный текст внутри плиток",
+    prompt: "Bento grid infographic with asymmetric modular tile layout (like Apple WWDC slides). Pastel-colored tiles of varying sizes: 1x1, 1x2, 2x1, 2x2 modules on a white or light gray background. Each tile contains one key stat or idea: large icon or number centered, short caption below. Rounded corners (12-16px) on tiles. Generous padding inside each tile. Clean geometric sans-serif font. Tiles use different pastel backgrounds: sage, lavender, peach, sky. No borders — tiles float with subtle shadow depth."
+  },
+  {
+    id: 11, cat: "editorial", name: "Retro / Vintage", sub: "Ретро и ностальгия",
+    color: "#B45309",
+    palette: "Охра, терракота, пыльный синий, кремовый #F5EED7, зернистая текстура",
+    typography: "Slab-serif или Art Deco (Rockwell, Playfair Italic), леттеринг плаката",
+    layout: "Концентрические рамки, декоративные бордеры, симметричная плакатная композиция",
+    mood: "Ностальгия, тепло, история, ремесло, WPA-poster или 1950s print",
+    avoid: "Неоновые цвета, тонкие шрифты, цифровая стерильность",
+    prompt: "Retro vintage infographic inspired by 1940s-1950s travel posters and WPA prints. Cream background (#F5EED7) with grain texture overlay. Muted earthy palette: ochre, terracotta, dusty teal, aged burgundy. Slab-serif display font (Rockwell) with Art Deco letterforms. Decorative concentric border frames around sections. Symmetrical poster composition. Sun rays, geometric badge shapes, stamp-style circular elements. Colors appear faded and screen-printed, not digital-clean."
+  },
+  {
+    id: 12, cat: "editorial", name: "Minimalist Swiss", sub: "Швейцарский интернациональный",
+    color: "#1A1A18",
+    palette: "Белый фон, чёрный текст, один акцент (красный #E8001D или жёлтый), строго",
+    typography: "Helvetica Neue или Aktiv Grotesk, строгая типографская сетка",
+    layout: "Математически точная сетка, много воздуха, типографика IS дизайн",
+    mood: "Precision, порядок, Bauhaus, International Typographic Style",
+    avoid: "Иллюстрации, декор, более 2 цветов, округлые шрифты",
+    prompt: "Swiss International Style minimalist infographic. Pure white background. Strictly Helvetica Neue or Aktiv Grotesk typography. Single accent color (red #E8001D or black only). Mathematical grid — every element snapped to baseline. Massive whitespace as a design choice. Typography IS the visual: oversized numbers in black, small body text at 11px. Thin horizontal rules dividing sections. Zero decorative elements. High information density through disciplined type hierarchy. Bauhaus grid aesthetic."
+  },
+  {
+    id: 13, cat: "art", name: "Watercolor & Organic", sub: "Акварельная органика",
+    color: "#DB2777",
+    palette: "Мягкие акварельные подтёки: лавандовый, персиковый, мятный, пыльно-розовый",
+    typography: "Elegant serif или hand-lettering, тонкие кегли, много воздуха",
+    layout: "Органические формы-пятна как фоны секций, акварельные значки, плавные переходы",
+    mood: "Wellness, природа, красота, творчество, lifestyle-бренды",
+    avoid: "Жёсткие линии, тёмные цвета, корпоративность, плотная сетка",
+    prompt: "Watercolor organic infographic with hand-painted aesthetic. Soft watercolor wash backgrounds: lavender, peach, mint, dusty rose. No hard edges — color bleeds and blends organically. Elegant thin serif font or hand-lettering for headings. Watercolor-style icons (botanical, abstract). Loose imperfect shapes as section dividers. White or cream base with color pooling in corners. Nature-inspired motifs: leaves, circles, flowing lines. Wellness and lifestyle brand aesthetic."
+  },
+  {
+    id: 14, cat: "tech", name: "Cyberpunk / Glitch", sub: "Киберпанк и глитч",
+    color: "#7C3AED",
+    palette: "Чёрный фон, кислотный #BF00FF, красный #FF0033, cyan #00FFFF, RGB-смещение",
+    typography: "Distorted monospace, RGB glitch-смещение на тексте, broken letterforms",
+    layout: "Сломанная сетка, смещённые слои, scanline-текстура, HUD-фрагменты, помехи",
+    mood: "Хаос в контроле, будущее-дистопия, Blade Runner, Akira, Matrix",
+    avoid: "Чистота, правильные линии, пастель, тепло",
+    prompt: "Cyberpunk glitch infographic. Pure black background with RGB color aberration effects: acid purple #BF00FF, hot red #FF0033, electric cyan #00FFFF. Glitched typography with horizontal scan distortions and RGB channel offset. Broken grid layout with intentionally misaligned layers. Scanline overlay texture. Corrupted barcode or QR-style decorative elements. Data displayed as fragmented HUD panels. Urban dystopia aesthetic inspired by Blade Runner and Ghost in the Shell. Text appears to flicker and distort."
+  },
+  {
+    id: 15, cat: "editorial", name: "Infographic Poster", sub: "Плакатная инфографика",
+    color: "#DC2626",
+    palette: "2-3 цвета максимум, высококонтрастные плоские заливки, конструктивизм",
+    typography: "Bold condensed (Bebas Neue, Impact), диагональные акценты",
+    layout: "Вертикальный формат A3, hero-визуал сверху, данные снизу, сильная ось",
+    mood: "Сила, движение, активизм, социальная кампания, советский конструктивизм",
+    avoid: "Мелкий текст, много секций, тонкие элементы",
+    prompt: "Bold infographic poster in constructivist propaganda style. Maximum 3 flat colors: black, white, and one vivid primary (red, yellow, or cobalt). Bold condensed typeface (Bebas Neue). Vertical A3 format with dominant hero visual in upper half, statistics in lower half. Diagonal geometric shapes as dividers. Large-scale typographic numbers as visual elements. Strong vertical composition axis. Soviet constructivism meets modern graphic design. Every element shouts."
+  },
+  {
+    id: 16, cat: "creative", name: "Corporate Memphis", sub: "Корпоративный Мемфис",
+    color: "#0891B2",
+    palette: "Пастельный фон #F0F0F0, акценты: синий, жёлтый, терракота, разнообразные персонажи",
+    typography: "Rounded sans-serif, средний вес, оптимистичный тон",
+    layout: "Иллюстрации людей с упрощёнными пропорциями, изометрия деталей",
+    mood: "Инклюзивность, оптимизм, Big Tech HR/DEI, современная startup-культура",
+    avoid: "Реализм в иллюстрациях, тёмные темы, острые углы",
+    prompt: "Corporate Memphis style infographic (diverse and inclusive big tech aesthetic). Pastel background (#F2F2F2). Flat human figures with simplified proportions and diverse representation. Bold but friendly color accents: blue, yellow, terracotta. Rounded sans-serif font. Abstract geometric shapes scattered as decoration. People interacting with data elements: holding charts, pointing to icons. Optimistic visual language used by Slack, Google, Mailchimp. Mix of illustration and data visualization."
+  },
+  {
+    id: 17, cat: "business", name: "Scientific / Medical", sub: "Научная / Медицинская",
+    color: "#0369A1",
+    palette: "Белый фон, синий #005B8E, серый, зелёный позитивный, красный критический",
+    typography: "Regular weight sans-serif (IBM Plex), чёткие подписи осей, SI-единицы",
+    layout: "Scatter plots, heat maps, анатомические схемы, точная легенда",
+    mood: "Доверие к данным, точность, рецензируемая публикация, наука",
+    avoid: "Иллюстративность, эмоциональность, художественные элементы",
+    prompt: "Scientific medical infographic following academic publication standards. White background, clean sans-serif (IBM Plex or Source Sans). Precise data visualization: scatter plots, heat maps, box plots, anatomical cross-sections. Color used semantically only: blue for informational, red for critical values, green for positive outcomes. Full axis labels with SI units. Numbered figure captions. Gridlines on charts. High data-ink ratio — no decorative elements. Peer-review journal figure aesthetic."
+  },
+  {
+    id: 18, cat: "art", name: "Y2K / Retro Digital", sub: "Y2K эстетика 2000-х",
+    color: "#7C3AED",
+    palette: "Серебряный металлик, голографическая радуга, кислотный #39FF14, хром",
+    typography: "Futuristic pixel или early digital (Eurostile, OCR-A), 3D-буквы с блеском",
+    layout: "Фоны CD-диска, пиксельные элементы, раннеинтернетная веб-эстетика",
+    mood: "Ностальгия по 2000-м, будущее из прошлого, Winamp, Napster, early web",
+    avoid: "Плоский современный минимализм, тонкие шрифты, зрелый корпоративный стиль",
+    prompt: "Y2K retro digital infographic inspired by late 1990s-early 2000s aesthetics. Silver metallic chrome backgrounds with holographic rainbow gradient overlays. Acid green #39FF14 accents on black. Futuristic display font (Eurostile or OCR-A). Pixel art elements mixed with early-3D rendered objects. CD disc iridescence texture. Lens flare effects. Bevel-and-emboss text treatment. References to early internet: loading bars, cursor icons, pixel grid. Winamp and Windows XP era visual language."
+  },
+  {
+    id: 19, cat: "art", name: "Organic / Biomorphic", sub: "Органические формы",
+    color: "#059669",
+    palette: "Земляные тона: зелёный #4A7C59, охра #C9A84C, тёмно-синий #1B3A4B, кремовый",
+    typography: "Serif с характером (Cormorant, Freight), строчные, литературный тон",
+    layout: "Blob-формы, органические кривые вместо прямоугольников, ботанические мотивы",
+    mood: "Nature-tech, sustainability, экология, биотехнологии, премиум wellness",
+    avoid: "Острые углы, корпоративная строгость, яркие неоны",
+    prompt: "Organic biomorphic infographic with nature-inspired forms. Earthy sophisticated palette: forest green #4A7C59, ochre #C9A84C, deep navy #1B3A4B, cream, terracotta. Smooth blob shapes and flowing curves replace rectangular grids. Botanical leaf and cell motifs as section dividers. Elegant serif typeface (Cormorant) in lowercase. Data contained within organic pod shapes. Flowing connecting lines like roots or neurons. Sustainable tech / environmental science aesthetic. Premium earthy feel."
+  },
+  {
+    id: 20, cat: "creative", name: "Pop Art / Comic", sub: "Поп-арт и комикс",
+    color: "#DC2626",
+    palette: "Первичные цвета: красный, синий, жёлтый, чёрные контуры 3px, halftone растр",
+    typography: "Comic-style bold (Bangers, Komika), речевые пузыри, шумовые слова",
+    layout: "Панели как комикс, жирные рамки, halftone текстура в заливке, экшн-линии",
+    mood: "Энергия, юмор, развлечение, вирусность, молодёжная аудитория",
+    avoid: "Сдержанность, монохром, серьёзность, тонкие шрифты",
+    prompt: "Pop art comic book infographic. Primary colors only: red, cobalt blue, yellow, on white. Bold black outlines 3px on all elements (Roy Lichtenstein aesthetic). Halftone dot pattern fills in colored areas. Comic-style display font (Bangers). Speech bubbles for data callouts. Action lines radiating from key statistics. Comic panel grid dividing sections with thick black borders. Onomatopoeia-style labels. Ben-Day dot texture. Numbers styled like POW! and ZAP! explosive shapes. High energy, fun, viral-ready visual language."
+  }
+];
+
+const CAT_LABELS = {
+  all: 'Все', business: 'Деловой', tech: 'Технологичный',
+  editorial: 'Редакционный', creative: 'Креативный', art: 'Художественный'
+};
+
+let currentCat = 'all';
+
+function setFilter(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.filter-btn[data-cat]').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = STYLES.filter(s => {
+    const matchCat = currentCat === 'all' || s.cat === currentCat;
+    const matchQ = !q || s.name.toLowerCase().includes(q) || s.sub.toLowerCase().includes(q)
+      || s.mood.toLowerCase().includes(q) || s.prompt.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  document.getElementById('count-bar').textContent = 'Показано: ' + filtered.length + ' стилей';
+  renderCards(filtered);
+}
+
+function renderCards(list) {
+  const grid = document.getElementById('grid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty">Ничего не найдено. Попробуйте изменить запрос.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(s => `
+    <div class="card" id="card-${s.id}">
+      <div class="style-strip" style="background:${s.color}"></div>
+      <div class="card-head" onclick="toggleCard(${s.id})">
+        <span class="card-num">${String(s.id).padStart(2,'0')}</span>
+        <div class="card-main">
+          <div class="card-name">${s.name}</div>
+          <div class="card-sub">${s.sub}</div>
+          <span class="card-tag tag-${s.cat}">${CAT_LABELS[s.cat]}</span>
+        </div>
+        <span class="card-chevron">▾</span>
+      </div>
+      <div class="card-details">
+        <div class="card-body">
+          <div class="card-body-inner">
+            <div class="detail-row"><span class="detail-key">Палитра</span><span class="detail-val">${s.palette}</span></div>
+            <div class="detail-row"><span class="detail-key">Типографика</span><span class="detail-val">${s.typography}</span></div>
+            <div class="detail-row"><span class="detail-key">Компоновка</span><span class="detail-val">${s.layout}</span></div>
+            <div class="detail-row"><span class="detail-key">Настроение</span><span class="detail-val">${s.mood}</span></div>
+            <div class="detail-row"><span class="detail-key">Избегать</span><span class="detail-val">${s.avoid}</span></div>
+            <div class="prompt-wrap">
+              <div class="prompt-label">Промпт для нейросети (EN)</div>
+              <div class="prompt-box" id="pt-${s.id}">${s.prompt}</div>
+              <button class="copy-btn" id="btn-${s.id}" onclick="copyPrompt(${s.id})">
+                ⎘ Скопировать промпт
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleCard(id) {
+  document.getElementById('card-' + id).classList.toggle('expanded');
+}
+
+function copyPrompt(id) {
+  const text = document.getElementById('pt-' + id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btn-' + id);
+    btn.textContent = '✓ Скопировано';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '⎘ Скопировать промпт';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+renderCards(STYLES);
+</script>
+</body>
+</html>
